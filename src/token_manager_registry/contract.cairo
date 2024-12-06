@@ -7,6 +7,9 @@ pub mod TokenManager {
         ITokenManagerGovernor, ITokenManagerRegistry, Status, Registration,
     };
     use crate::token::interface::{IMintableERC20Dispatcher, IMintableERC20DispatcherTrait};
+    use crate::kyc_registry::interface::{
+        IKycRegistryDispatcher, IKycRegistryDispatcherTrait, Registration,
+    };
 
     use openzeppelin::access::ownable::OwnableComponent;
 
@@ -22,6 +25,7 @@ pub mod TokenManager {
         ownable: OwnableComponent::Storage,
         registration: Map<ContractAddress, Registration>,
         whitelisted_currencies: Map<ContractAddress, bool>,
+        kyc_registry: ContractAddress,
     }
 
     #[event]
@@ -32,8 +36,9 @@ pub mod TokenManager {
     }
 
     #[constructor]
-    fn constructor(ref self: ContractState, owner: ContractAddress) {
+    fn constructor(ref self: ContractState, owner: ContractAddress, kyc_registry: ContractAddress) {
         self.ownable.initializer(owner);
+        self.kyc_registry.write(kyc_registry);
     }
 
     #[abi(embed_v0)]
@@ -58,6 +63,14 @@ pub mod TokenManager {
         ) {
             self.assert_only_registered();
             assert(self.whitelisted_currencies.read(currency) == true, 'Not whitelisted');
+
+            let kyc_registry = IKycRegistryDispatcher {
+                contract_address: self.kyc_registry.read(),
+            };
+            let registration = kyc_registry.get_registration_status(user);
+
+            assert(registration.status == Status::Active, 'KYC not approved');
+
             let dispatcher = IMintableERC20Dispatcher { contract_address: currency };
             dispatcher.mint(user, amount.into());
         }

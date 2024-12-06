@@ -7,3 +7,8 @@
 # keystore = "~/keystore"                                # Path to the keystore file
 # wait_params = { timeout = 500, retry_interval = 10 }   # Wait for submitted transaction parameters
 # block_explorer = "StarkScan"                           # Block explorer service used to display links to transaction details
+
+[sncast.madaraProfile]
+account = "madara_funded"
+accounts-file = "/Users/bytezorvin/.starknet_accounts/starknet_open_zeppelin_accounts.json"
+url = "http://madara-karnot-v2.karnot.xyz/"
