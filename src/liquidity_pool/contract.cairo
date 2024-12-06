@@ -4,7 +4,9 @@ pub mod LiquidityPool {
     use starknet::storage::Map;
 
     use openzeppelin::token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
-    use crate::kyc_registry::interface::{ IKycRegistryDispatcher, IKycRegistryDispatcherTrait, Registration, Status };
+    use crate::kyc_registry::interface::{
+        IKycRegistryDispatcher, IKycRegistryDispatcherTrait, Status,
+    };
 
     use crate::liquidity_pool::interface::ILiquidityPool;
 
@@ -21,8 +23,20 @@ pub mod LiquidityPool {
 
     impl ILiquidityPoolImpl of ILiquidityPool<ContractState> {
         fn add_liquidity(
-            ref self: ContractState, token1: ContractAddress, token2: ContractAddress,
-        ) {}
+            ref self: ContractState,
+            token1: ContractAddress,
+            token2: ContractAddress,
+            token1_amount: u128,
+            token2_amount: u128,
+        ) {
+            let caller = get_caller_address();
+            self.check_kyc(caller);
+            let dispatcher_token1 = IERC20Dispatcher { contract_address: token1 };
+            let dispatcher_token2 = IERC20Dispatcher { contract_address: token2 };
+
+            dispatcher_token1.transfer_from(caller, get_contract_address(), token1_amount.into());
+            dispatcher_token2.transfer_from(caller, get_contract_address(), token2_amount.into());
+        }
 
         fn perform_forex(
             ref self: ContractState,
@@ -34,7 +48,7 @@ pub mod LiquidityPool {
             let caller = get_caller_address();
             self.check_kyc(caller);
             self.check_kyc(recipient);
-            
+
             let dispatcher_in = IERC20Dispatcher { contract_address: in_token };
             let dispatcher_out = IERC20Dispatcher { contract_address: out_token };
 
@@ -60,7 +74,9 @@ pub mod LiquidityPool {
         }
 
         fn check_kyc(ref self: ContractState, user: ContractAddress) {
-            let kyc_registry = IKycRegistryDispatcher { contract_address: self.kyc_registry.read() };
+            let kyc_registry = IKycRegistryDispatcher {
+                contract_address: self.kyc_registry.read(),
+            };
             let registration = kyc_registry.get_registration_status(user);
             assert(registration.status == Status::Active, 'KYC not approved');
         }

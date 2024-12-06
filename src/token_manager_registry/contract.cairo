@@ -7,9 +7,7 @@ pub mod TokenManager {
         ITokenManagerGovernor, ITokenManagerRegistry, Status, Registration,
     };
     use crate::token::interface::{IMintableERC20Dispatcher, IMintableERC20DispatcherTrait};
-    use crate::kyc_registry::interface::{
-        IKycRegistryDispatcher, IKycRegistryDispatcherTrait, Registration,
-    };
+    use crate::kyc_registry::interface::{IKycRegistryDispatcher, IKycRegistryDispatcherTrait};
 
     use openzeppelin::access::ownable::OwnableComponent;
 
