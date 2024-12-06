@@ -11,6 +11,10 @@ pub mod FinternetId {
         claimed_ids: Map<felt252, bool>,
     }
 
+    #[constructor]
+    fn constructor(ref self: ContractState) {}
+
+    #[abi(embed_v0)]
     impl IFinternetIdImpl of IFinternetId<ContractState> {
         fn get_id(self: @ContractState, user: ContractAddress) -> felt252 {
             self.id.read(user)
@@ -19,6 +23,7 @@ pub mod FinternetId {
         fn register(ref self: ContractState, user: ContractAddress, finternet_id: felt252) {
             assert!(self.claimed_ids.read(finternet_id) == false, "ID already claimed");
             self.claimed_ids.write(finternet_id, true);
+            self.id.write(user, finternet_id);
         }
     }
 }

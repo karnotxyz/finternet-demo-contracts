@@ -31,8 +31,11 @@ pub mod KycRegistry {
 
 
     #[constructor]
-    fn constructor(ref self: ContractState) {}
+    fn constructor(ref self: ContractState, owner: ContractAddress) {
+        self.ownable.initializer(owner);
+    }
 
+    #[abi(embed_v0)]
     impl IKycRegistryImpl of IKycRegistry<ContractState> {
         fn is_registered(self: @ContractState, user: ContractAddress) -> bool {
             self.kyc.read(user).status == Status::Active

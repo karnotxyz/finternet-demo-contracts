@@ -14,7 +14,6 @@ pub mod liquidity_pool {
     pub mod interface;
     pub mod contract;
 }
-
 pub mod token {
     pub mod contract;
     pub mod interface;

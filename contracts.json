@@ -1,0 +1,12 @@
+{
+    "class_hashes": {
+        "FinternetId": "0x26c00cc5e2c69164848b30c7038c96bf4e48ecc6a295d42bba4765151b91000",
+        "KycRegistry": "0x6e81bb3ea0e05c8f671aff70cb165ac724f6c4672fee4faff34a3fea195a521",
+        "LiquidityPool": "0xd61531136a90ec24f5e7b2126af717d7fa81e4bd32fc90d376ed8110a7037d"
+    },
+    "contracts": {
+        "FinternetId": "0x4854dab7ff60c9d3b178156c05233e6b1dfb5fb68da13909aaddaf8de74fc29",
+        "KycRegistry": "0x483325f3b47f9d4197b0378b96f80a670cf2a6fd9294c444561f35a39e5161f",
+        "LiquidityPool": "0x3431375bcbf5e6876a29a416d2f615bf68a99c510f841f534ed525218ec4ebd"
+    }
+}

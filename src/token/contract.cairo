@@ -46,8 +46,8 @@ mod TokenizedCurrency {
     }
 
     #[constructor]
-    fn constructor(ref self: ContractState, owner: ContractAddress) {
-        self.erc20.initializer("MyToken", "MTK");
+    fn constructor(ref self: ContractState, name: ByteArray, symbol: ByteArray, owner: ContractAddress) {
+        self.erc20.initializer(name, symbol);
         self.ownable.initializer(owner);
     }
 

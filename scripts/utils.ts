@@ -1,20 +1,20 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import assert from 'assert'
-import {Account, RawArgs, RpcProvider, TransactionExecutionStatus, extractContractHashes, hash, json, provider} from 'starknet'
+import {Account, RawArgs, RpcProvider, TransactionExecutionStatus, TransactionFinalityStatus, extractContractHashes, hash, json, provider} from 'starknet'
 import { readFileSync, existsSync, writeFileSync } from 'fs'
 
 console.log('===============================')
 console.log(`Network: ${process.env.NETWORK}`);
-console.log(`RPC: ${process.env.MY_RPC_URL}`);
+console.log(`RPC: ${process.env.RPC_URL}`);
 console.log('===============================')
 
 export function getRpcProvider() {
-    assert(process.env.MY_RPC_URL, 'invalid RPC_URL');
+    assert(process.env.RPC_URL, 'invalid RPC_URL');
     return new RpcProvider({nodeUrl: process.env.MY_RPC_URL})
 }
 
-function getContracts() {
+export function getContracts() {
     const PATH = './contracts.json'
     if (existsSync(PATH)) {
         return JSON.parse(readFileSync(PATH, {encoding: 'utf-8'}))
@@ -65,19 +65,21 @@ export async function myDeclare(contract_name: string, package_name: string = 's
     
     const tx = await acc.declareIfNot(payload)
     console.log(`Declaring: ${contract_name}, tx:`, tx.transaction_hash);
-    await provider.waitForTransaction(tx.transaction_hash, {
-        successStates: [TransactionExecutionStatus.SUCCEEDED]
-    })
-    
     if (!contracts.class_hashes) {
         contracts['class_hashes'] = {};
     }
-
     // Todo attach cairo and scarb version. and commit ID
     contracts.class_hashes[contract_name] = tx.class_hash;
     saveContracts(contracts);
     console.log(`Contract declared: ${contract_name}`)
     console.log(`Class hash: ${tx.class_hash}`)
+    // await provider.waitForTransaction(tx.transaction_hash, {
+    //     successStates: [TransactionFinalityStatus.ACCEPTED_ON_L2]
+    // })
+    
+    
+
+   
     return tx;
 }
 
@@ -96,9 +98,7 @@ export async function deployContract(contract_name: string, classHash: string, c
         constructorCalldata: constructorData,
     })
     console.log('Deploy tx: ', tx.transaction_hash);
-    await provider.waitForTransaction(tx.transaction_hash, {
-        successStates: [TransactionExecutionStatus.SUCCEEDED]
-    })
+
     const contracts = getContracts();
     if (!contracts.contracts) {
         contracts['contracts'] = {};
@@ -106,6 +106,10 @@ export async function deployContract(contract_name: string, classHash: string, c
     contracts.contracts[contract_name] = tx.contract_address;
     saveContracts(contracts);
     console.log(`Contract deployed: ${contract_name}`)
-    console.log(`Address: ${tx.contract_address}`)
+    console.log(`Address: ${tx.contract_address}`);
+    // await provider.waitForTransaction(tx.transaction_hash, {
+    //     successStates: [TransactionFinalityStatus.ACCEPTED_ON_L2]
+    // })
+
     return tx;
 }

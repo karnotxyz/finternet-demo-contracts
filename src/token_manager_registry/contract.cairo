@@ -62,13 +62,7 @@ pub mod TokenManager {
             self.assert_only_registered();
             assert(self.whitelisted_currencies.read(currency) == true, 'Not whitelisted');
 
-            let kyc_registry = IKycRegistryDispatcher {
-                contract_address: self.kyc_registry.read(),
-            };
-            let registration = kyc_registry.get_registration_status(user);
-
-            assert(registration.status == Status::Active, 'KYC not approved');
-
+            self.assert_only_kyc_approved(user);
             let dispatcher = IMintableERC20Dispatcher { contract_address: currency };
             dispatcher.mint(user, amount.into());
         }
@@ -94,6 +88,14 @@ pub mod TokenManager {
         fn assert_only_registered(self: @ContractState) {
             let caller = get_caller_address();
             assert(self.is_registered(caller), 'Not registered');
+        }
+
+        fn assert_only_kyc_approved(self: @ContractState, user: ContractAddress) {
+            let kyc_registry = IKycRegistryDispatcher {
+                contract_address: self.kyc_registry.read(),
+            };
+            let registration = kyc_registry.get_registration_status(user);
+            assert(registration.status == Status::Active, 'KYC not approved');
         }
     }
 }

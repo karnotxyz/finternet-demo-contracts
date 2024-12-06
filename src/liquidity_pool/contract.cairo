@@ -17,10 +17,12 @@ pub mod LiquidityPool {
         kyc_registry: ContractAddress,
     }
 
+    #[constructor]
     fn constructor(ref self: ContractState, kyc_registry: ContractAddress) {
         self.kyc_registry.write(kyc_registry);
     }
 
+    #[abi(embed_v0)]
     impl ILiquidityPoolImpl of ILiquidityPool<ContractState> {
         fn add_liquidity(
             ref self: ContractState,
