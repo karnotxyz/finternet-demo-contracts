@@ -8,7 +8,7 @@ pub mod FinternetId {
     #[storage]
     struct Storage {
         id: Map<ContractAddress, felt252>,
-        total_ids: u128,
+        claimed_ids: Map<felt252, bool>,
     }
 
     impl IFinternetIdImpl of IFinternetId<ContractState> {
@@ -17,8 +17,8 @@ pub mod FinternetId {
         }
 
         fn register(ref self: ContractState, user: ContractAddress, finternet_id: felt252) {
-            self.total_ids.write(self.total_ids.read() + 1);
-            self.id.write(user, finternet_id);
+            assert!(self.claimed_ids.read(finternet_id) == false, "ID already claimed");
+            self.claimed_ids.write(finternet_id, true);
         }
     }
 }
