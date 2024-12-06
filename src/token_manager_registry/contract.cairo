@@ -1,9 +1,12 @@
 #[starknet::contract]
 pub mod TokenManager {
     use OwnableComponent::InternalTrait;
-    use starknet::ContractAddress;
+    use starknet::{ContractAddress, get_caller_address};
     use starknet::storage::{Map};
-    use crate::token_manager_registry::interface::{ITokenManagerRegistry, Status, Registration};
+    use crate::token_manager_registry::interface::{
+        ITokenManagerGovernor, ITokenManagerRegistry, Status, Registration,
+    };
+    use crate::token::interface::{IMintableERC20Dispatcher, IMintableERC20DispatcherTrait};
 
     use openzeppelin::access::ownable::OwnableComponent;
 
@@ -18,6 +21,7 @@ pub mod TokenManager {
         #[substorage(v0)]
         ownable: OwnableComponent::Storage,
         registration: Map<ContractAddress, Registration>,
+        whitelisted_currencies: Map<ContractAddress, bool>,
     }
 
     #[event]
@@ -48,11 +52,37 @@ pub mod TokenManager {
             self.registration.read(entity)
         }
 
+
+        fn tokenize(
+            ref self: ContractState, currency: ContractAddress, user: ContractAddress, amount: u128,
+        ) {
+            self.assert_only_registered();
+            assert(self.whitelisted_currencies.read(currency) == true, 'Not whitelisted');
+            let dispatcher = IMintableERC20Dispatcher { contract_address: currency };
+            dispatcher.mint(user, amount.into());
+        }
+    }
+
+    #[abi(embed_v0)]
+    impl ITokenManagerGovernorImpl of ITokenManagerGovernor<ContractState> {
         fn approve_registration(ref self: ContractState, entity: ContractAddress) {
             self.ownable.assert_only_owner();
             let registration = self.registration.read(entity);
             let updated_registration = Registration { status: Status::Active, ..registration };
             self.registration.write(entity, updated_registration);
+        }
+
+        fn whitelist_currency(ref self: ContractState, currency: ContractAddress) {
+            self.ownable.assert_only_owner();
+            self.whitelisted_currencies.write(currency, true);
+        }
+    }
+
+    #[generate_trait]
+    impl TokenManagerInternalImpl of TokenManagerInternalTrait {
+        fn assert_only_registered(self: @ContractState) {
+            let caller = get_caller_address();
+            assert(self.is_registered(caller), 'Not registered');
         }
     }
 }

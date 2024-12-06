@@ -5,20 +5,9 @@ pub mod FinternetId {
     use starknet::storage::Map;
     use crate::finternet_id::interface::IFinternetId;
 
-
     #[storage]
     struct Storage {
-        #[substorage(v0)]
-        ownable: OwnableComponent::Storage,
         id: Map<ContractAddress, ByteArray>,
-    }
-
-
-    #[event]
-    #[derive(Drop, starknet::Event)]
-    enum Event {
-        #[flat]
-        OwnableEvent: OwnableComponent::Event,
     }
 
     impl IFinternetIdImpl of IFinternetId<ContractState> {

@@ -7,6 +7,6 @@ pub trait ILiquidityPool<TContractState> {
         ref self: TContractState,
         in_token: ContractAddress,
         out_token: ContractAddress,
-        in_amount: felt252,
+        in_amount: u128,
     );
 }
