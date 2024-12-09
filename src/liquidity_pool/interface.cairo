@@ -17,4 +17,5 @@ pub trait ILiquidityPool<TContractState> {
         recipient: ContractAddress,
     );
     fn get_exchange_rate(self: @TContractState) -> u128;
+    fn set_exchange_rate(ref self: TContractState, exchange_rate: u128);
 }

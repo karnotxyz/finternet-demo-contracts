@@ -8,6 +8,7 @@ pub mod FinternetId {
     #[storage]
     struct Storage {
         id: Map<ContractAddress, felt252>,
+        id_to_user: Map<felt252, ContractAddress>,
         claimed_ids: Map<felt252, bool>,
     }
 
@@ -24,6 +25,11 @@ pub mod FinternetId {
             assert!(self.claimed_ids.read(finternet_id) == false, "ID already claimed");
             self.claimed_ids.write(finternet_id, true);
             self.id.write(user, finternet_id);
+            self.id_to_user.write(finternet_id, user);
+        }
+
+        fn get_user_by_id(self: @ContractState, finternet_id: felt252) -> ContractAddress {
+            self.id_to_user.read(finternet_id)
         }
     }
 }

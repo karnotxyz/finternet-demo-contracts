@@ -1,0 +1,18 @@
+{
+    "class_hashes": {
+        "FinternetId": "0x40aaa5f37b5e30a6ae8af91fe7fbb957a6a846c3354eac330a7b8c18d734e4d",
+        "KycRegistry": "0x6e81bb3ea0e05c8f671aff70cb165ac724f6c4672fee4faff34a3fea195a521",
+        "LiquidityPool": "0x72f359e66fc9b2f620252cfb1b8bb3f55ab8195e7999d75d9c7e8a52b48ff6f",
+        "TokenizedCurrency": "0x4a045f7165ab41e7a48efff932c3ced8d80050183cc425b55101e2e586a232"
+    },
+    "contracts": {
+        "FinternetId": "0x2598f9682dc9ecdcb0079f6ff26ac1c1689d313bc217e3286b4d1cdaaef2834",
+        "KycRegistry": "0x233cda1f1c9b6ffefe2a0a346f1f5e98902788bac6dce0eb2efb669dbe75fd9",
+        "LiquidityPool": "0x34b4735bf438f1468502f82cee84384d2789f80397ff0e8a51a4f0ba9799d3b",
+        "TokenManager": "0x602a81f10bf9f5c982f7e0afe7a8d4fcb400006a8fc84d529e5dcf9ba244d52",
+        "Tokens": {
+            "INR": "0x20326e47ad027323af36b4c36bc03f163c718934bcfe5e4986a84abb67c575",
+            "SGD": "0x1774290639912d741e14f18acd4d852318144f41eb18246a1dfe219d3cee6ae"
+        }
+    }
+}

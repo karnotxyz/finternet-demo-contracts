@@ -64,6 +64,11 @@ export async function myDeclare(contract_name: string, package_name: string = 's
     console.log("classhash:", result.classHash);
     
     const tx = await acc.declareIfNot(payload)
+
+    await provider.waitForTransaction(tx.transaction_hash, {
+        successStates: [TransactionFinalityStatus.ACCEPTED_ON_L2]
+    })
+
     console.log(`Declaring: ${contract_name}, tx:`, tx.transaction_hash);
     if (!contracts.class_hashes) {
         contracts['class_hashes'] = {};
@@ -73,9 +78,7 @@ export async function myDeclare(contract_name: string, package_name: string = 's
     saveContracts(contracts);
     console.log(`Contract declared: ${contract_name}`)
     console.log(`Class hash: ${tx.class_hash}`)
-    // await provider.waitForTransaction(tx.transaction_hash, {
-    //     successStates: [TransactionFinalityStatus.ACCEPTED_ON_L2]
-    // })
+   
     
     
 
@@ -99,6 +102,11 @@ export async function deployContract(contract_name: string, classHash: string, c
     })
     console.log('Deploy tx: ', tx.transaction_hash);
 
+    await provider.waitForTransaction(tx.transaction_hash, {
+        // successStates: [TransactionFinalityStatus.ACCEPTED_ON_L2],
+        retryInterval: 100
+    })
+
     const contracts = getContracts();
     if (!contracts.contracts) {
         contracts['contracts'] = {};
@@ -107,9 +115,6 @@ export async function deployContract(contract_name: string, classHash: string, c
     saveContracts(contracts);
     console.log(`Contract deployed: ${contract_name}`)
     console.log(`Address: ${tx.contract_address}`);
-    // await provider.waitForTransaction(tx.transaction_hash, {
-    //     successStates: [TransactionFinalityStatus.ACCEPTED_ON_L2]
-    // })
 
     return tx;
 }

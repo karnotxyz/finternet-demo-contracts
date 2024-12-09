@@ -20,6 +20,7 @@ pub mod LiquidityPool {
     #[constructor]
     fn constructor(ref self: ContractState, kyc_registry: ContractAddress) {
         self.kyc_registry.write(kyc_registry);
+        self.exchange_rate.write(1);
     }
 
     #[abi(embed_v0)]
@@ -66,6 +67,10 @@ pub mod LiquidityPool {
 
         fn get_exchange_rate(self: @ContractState) -> u128 {
             self.exchange_rate.read()
+        }
+
+        fn set_exchange_rate(ref self: ContractState, exchange_rate: u128) {
+            self.exchange_rate.write(exchange_rate);
         }
     }
 
