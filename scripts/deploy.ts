@@ -1,14 +1,15 @@
 import * as dotenv from "dotenv";
 dotenv.config();
+
 import { deployContract, getAccount, myDeclare, getContracts, getProvider } from "./utils";
 import { Account, ByteArray, RawArgs, uint256, RpcProvider, TransactionExecutionStatus, extractContractHashes, hash, json, provider, byteArray, Contract, num } from 'starknet'
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 async function deployFinternetId(acc: Account) {
-    // const { class_hash } = await myDeclare("FinternetId", "finternet")
+  // const { class_hash } = await myDeclare("FinternetId", "finternet")
   await deployContract("FinternetId", "0x40aaa5f37b5e30a6ae8af91fe7fbb957a6a846c3354eac330a7b8c18d734e4d", {});
-    // await deployContract("FinternetId", class_hash, {});
+  // await deployContract("FinternetId", class_hash, {});
 }
 
 async function deployKycRegistry(acc: Account) {
@@ -154,13 +155,59 @@ async function setExchangeRate(acc: Account) {
   console.log(result);
 }
 
+async function getxStrkBalance(acc: Account) {
+  const provider = getProvider();
+  const xStrkAddress = "0x28d709c875c0ceac3dce7065bec5328186dc89fe254527084d1689910954b0a";
+  const xStrkClass = await provider.getClassAt(xStrkAddress);
+  const xStrk = new Contract(xStrkClass.abi, xStrkAddress, provider);
 
+  const balance0 = await xStrk.call('balance_of', [
+    "0x041550e863b2a374ee28b08c033e1d828384b80a4cf50bd1192e68378eca6de2"
+  ], { blockIdentifier: "1088640" });
+
+  // const balance1 = await xStrk.call('balance_of', [
+  //   "0x0301c5ba2c76af76c28e9f4d55680d8507267b9d324129a71d6cdc54a3318298"
+  // ], { blockIdentifier: "973168" });
+  //
+  // const balance2 = await xStrk.call('balance_of', [
+  //   "0x0301c5ba2c76af76c28e9f4d55680d8507267b9d324129a71d6cdc54a3318298"
+  // ], { blockIdentifier: "973169" });
+  //
+  // const balance3 = await xStrk.call('balance_of', [
+  //   "0x0301c5ba2c76af76c28e9f4d55680d8507267b9d324129a71d6cdc54a3318298"
+  // ], { blockIdentifier: "973170" });
+  //
+  // const balance4 = await xStrk.call('balance_of', [
+  //   "0x0301c5ba2c76af76c28e9f4d55680d8507267b9d324129a71d6cdc54a3318298"
+  // ], { blockIdentifier: "973651" });
+  //
+  // const balance5 = await xStrk.call('balance_of', [
+  //   "0x0301c5ba2c76af76c28e9f4d55680d8507267b9d324129a71d6cdc54a3318298"
+  // ], { blockIdentifier: "973652" });
+  //
+  // const balance6 = await xStrk.call('balance_of', [
+  //   "0x0301c5ba2c76af76c28e9f4d55680d8507267b9d324129a71d6cdc54a3318298"
+  // ], { blockIdentifier: "973656" });
+  //
+  // const balance7 = await xStrk.call('balance_of', [
+  //   "0x0301c5ba2c76af76c28e9f4d55680d8507267b9d324129a71d6cdc54a3318298"
+  // ], { blockIdentifier: "973657" });
+  //
+  // console.log(balance1, balance2, balance3, balance4, balance5, balance6);
+  console.log(balance0);
+}
+
+
+
+async function deployEkuboMathLib(acc: Account) {
+  await deployContract("EkuboMathLib", "0x037d63129281c4c42cba74218c809ffc9e6f87ca74e0bdabb757a7f236ca59c3", {});
+}
 
 
 async function main() {
   const acc = getAccount();
-  await deployFinternetId(acc);
-  await deployKycRegistry(acc);
+  // await deployFinternetId(acc);
+  // await deployKycRegistry(acc);
   // await deployLiquidityPool(acc);
   // await deployTokenManager(acc);
   // await deployTokenizedCurrency(acc);
@@ -171,6 +218,8 @@ async function main() {
   // await transferCurrency(acc);
   // await getBalance(acc);
   // await setExchangeRate(acc);
+  // await getxStrkBalance(acc);
+  await deployEkuboMathLib(acc);
 }
 
 main();

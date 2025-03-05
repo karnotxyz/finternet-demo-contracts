@@ -1,5 +1,1 @@
-{
-  "contracts": {
-    "FinternetId": "0x52da1d9f81f3f3e10466af635b8468e2ecd9e58c863941c4a6013cad3c4d65c"
-  }
-}
+{"contracts":{"FinternetId":"0x52da1d9f81f3f3e10466af635b8468e2ecd9e58c863941c4a6013cad3c4d65c","EkuboMathLib":"0x4a72e9e166f6c0e9d800af4dc40f6b6fb4404b735d3f528d9250808b2481995"}}

@@ -11,9 +11,9 @@
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.4.7",
-    "starknet": "^6.11.0"
+    "starknet": "6.21.0"
   },
   "devDependencies": {
-    "@types/node": "^22.10.1"
+    "@types/node": "^22.10.6"
   }
 }
